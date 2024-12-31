@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph.xml"
+    app:startDestination="@id/title1">
+
+    <fragment
+        android:id="@+id/title1"
+        android:name="com.harjot.navdrawer.Title1"
+        android:label="fragment_title1"
+        tools:layout="@layout/fragment_title1" />
+    <fragment
+        android:id="@+id/title2"
+        android:name="com.harjot.navdrawer.Title2"
+        android:label="fragment_title2"
+        tools:layout="@layout/fragment_title2" />
+    <fragment
+        android:id="@+id/title3"
+        android:name="com.harjot.navdrawer.Title3"
+        android:label="fragment_title3"
+        tools:layout="@layout/fragment_title3" />
+</navigation>
