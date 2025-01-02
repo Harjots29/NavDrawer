@@ -13,6 +13,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.google.android.material.navigation.NavigationBarView
 import com.google.android.material.navigation.NavigationView
@@ -28,7 +29,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var appBarConfiguration: AppBarConfiguration
     lateinit var navController: NavController
 
-    var backButton: ImageButton?=null
+//    var backButton: ImageButton?=null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -38,22 +39,34 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        navController = findNavController(R.id.jetpackNav)
-        drawerLayout = findViewById(R.id.main)
-        actionBarDrawerToggle = ActionBarDrawerToggle(this,drawerLayout,
-            R.string.nav_open,
-            R.string.nav_close)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        drawerLayout.addDrawerListener(actionBarDrawerToggle)
-        //set up the action bar
-        setupActionBar()
+    navController = findNavController(R.id.jetpackNav)
+    drawerLayout = findViewById(R.id.main)
+    actionBarDrawerToggle = ActionBarDrawerToggle(this,drawerLayout,
+        R.string.nav_open,
+        R.string.nav_close)
+    supportActionBar?.setDisplayHomeAsUpEnabled(true)
+    drawerLayout.addDrawerListener(actionBarDrawerToggle)
+    
 
-        //Set automatically and sync whether open or close
+    //Set automatically and sync whether open or close
+    actionBarDrawerToggle.syncState()
+
+    appBarConfiguration = AppBarConfiguration(navController.graph,drawerLayout)
+    setupActionBarWithNavController(navController,appBarConfiguration)
+    navController.addOnDestinationChangedListener { _, destination, _ ->
+        if (destination.id == R.id.title1) {
+            // Show hamburger icon
+            drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+            actionBarDrawerToggle.isDrawerIndicatorEnabled = true
+        } else {
+            // Show back button
+            drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)//drawer ko disable kar diya
+//          abh vooh naah open / swipe hoyega + naah hamburger dikhayega  , but backbtn dikhayega
+            actionBarDrawerToggle.isDrawerIndicatorEnabled = false
+        }
         actionBarDrawerToggle.syncState()
-
-        appBarConfiguration = AppBarConfiguration(navController.graph,drawerLayout)
-        setupActionBarWithNavController(navController,appBarConfiguration)
-        binding.navView.setNavigationItemSelectedListener { item->
+    }
+    binding.navView.setNavigationItemSelectedListener { item->
             when(item.itemId){
                 R.id.t1->{
                     navController.navigate(R.id.title1)
@@ -79,7 +92,8 @@ class MainActivity : AppCompatActivity() {
             true
         }else super.onOptionsItemSelected(item)
     }
-    private fun setupActionBar() {
-
+    //  ensure the proper back navigation using NavigationUI.navigateUp().
+    override fun onSupportNavigateUp(): Boolean {
+        return NavigationUI.navigateUp(navController, appBarConfiguration) || super.onSupportNavigateUp()
     }
 }
